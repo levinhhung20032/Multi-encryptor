@@ -15,6 +15,7 @@ class View:
         self.icon = PhotoImage(file="Image/shield.png")
         self.main.iconphoto(False, self.icon)
         self.main.attributes("-topmost", True)
+        self.main.resizable(False, False)
 
         self.MainFrame = Frame(self.main)
 
