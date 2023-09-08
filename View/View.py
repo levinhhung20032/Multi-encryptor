@@ -1,4 +1,4 @@
-from Controller import CaesarController
+from Controller import ShiftController
 from Controller import AffineController
 from Controller import VignenereController
 from Controller import HillController
@@ -6,6 +6,7 @@ from Model import DAO
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
+import math
 
 
 class View:
@@ -32,8 +33,8 @@ class View:
         self.CryptField['yscrollcommand'] = self.CryptScrollbar.set
 
         self.CipherOptionLabel = Label(self.MainFrame, text="Hệ mã hóa", font=("Arial", "14", "bold"))
-        self.option = ["Caesar Cipher", "Affine Cipher", "Vignenere Cipher", "Hill Cipher"]
-        self.CipherOption = ttk.Combobox(self.MainFrame, values=self.option)
+        self.option = ["Shift Cipher", "Affine Cipher", "Vignenere Cipher", "Hill Cipher"]
+        self.CipherOption = ttk.Combobox(self.MainFrame, values=self.option, state='readonly')
         self.CipherOption.current(0)
 
         self.KLabel = Label(self.MainFrame, text="Hệ số k:", font=("Arial", "12"))
@@ -73,25 +74,39 @@ class View:
             if k == "":
                 messagebox.showinfo("Hệ số k", "Chưa điền hệ số k!")
             else:
-                try:
-                    k = int(k)
-                    if k <= 0:
-                        messagebox.showinfo("Hệ số k", "Giá trị k phải dương!")
+                crypt = ""
+                if self.CipherOption.get() == "Shift Cipher":
+                    try:
+                        k = int(k)
+                        crypt = ShiftController.Encrypt(k)
+                    except ValueError:
+                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+                elif self.CipherOption.get() == "Affine Cipher":
+                    k = tuple(int(num) for num in
+                              k.replace(", ", ",").replace("(", "").replace(")", "")
+                              .replace("[", "").replace("]", "").replace("{", "")
+                              .replace("}", "").split(","))
+                    if len(k) != 2:
+                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+                    elif math.gcd(k[0], 95) != 1:
+                        messagebox.showinfo("Hệ số k", "Hệ số k không hợp lệ!")
                     else:
-                        crypt = ""
-                        if self.CipherOption.get() == "Caesar Cipher":
-                            crypt = CaesarController.Encrypt(k)
-                        elif self.CipherOption.get() == "Affine Cipher":
-                            crypt = AffineController.Encrypt(k)
-                        elif self.CipherOption.get() == "Vignenere Cipher":
-                            crypt = VignenereController.Encrypt(k)
-                        elif self.CipherOption.get() == "Hill Cipher":
-                            crypt = HillController.Encrypt(k)
-                        self.CryptField.delete('1.0', 'end-1c')
-                        self.CryptField.insert(END, crypt)
-                        DAO.SetCrypt(crypt)
-                except ValueError:
-                    messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+                        crypt = AffineController.Encrypt(k)
+                elif self.CipherOption.get() == "Vignenere Cipher":
+                    try:
+                        k = int(k)
+                        crypt = VignenereController.Encrypt(k)
+                    except ValueError:
+                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+                elif self.CipherOption.get() == "Hill Cipher":
+                    try:
+                        k = int(k)
+                        crypt = HillController.Encrypt(k)
+                    except ValueError:
+                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+                self.CryptField.delete('1.0', 'end-1c')
+                self.CryptField.insert(END, crypt)
+                DAO.SetCrypt(crypt)
 
     def DecryptButtonClick(self):
         s = self.CryptField.get('1.0', 'end-1c')
@@ -103,22 +118,39 @@ class View:
             if k == "":
                 messagebox.showinfo("Hệ số k", "Chưa điền hệ số k!")
             else:
-                k = int(k)
-                if k <= 0:
-                    messagebox.showinfo("Hệ số k", "Giá trị k phải dương!")
-                else:
-                    text = ""
-                    if self.CipherOption.get() == "Caesar Cipher":
-                        text = CaesarController.Decrypt(k)
-                    elif self.CipherOption.get() == "Affine Cipher":
+                text = ""
+                if self.CipherOption.get() == "Shift Cipher":
+                    try:
+                        k = int(k)
+                        text = ShiftController.Decrypt(k)
+                    except ValueError:
+                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+                elif self.CipherOption.get() == "Affine Cipher":
+                    k = tuple(int(num) for num in
+                              k.replace(", ", ",").replace("(", "").replace(")", "")
+                              .replace("[", "").replace("]", "").replace("{", "")
+                              .replace("}", "").split(","))
+                    if len(k) != 2:
+                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+                    elif math.gcd(k[0], 95) != 1:
+                        messagebox.showinfo("Hệ số k", "Hệ số k không hợp lệ!")
+                    else:
                         text = AffineController.Decrypt(k)
-                    elif self.CipherOption.get() == "Vignenere Cipher":
+                elif self.CipherOption.get() == "Vignenere Cipher":
+                    try:
+                        k = int(k)
                         text = VignenereController.Decrypt(k)
-                    elif self.CipherOption.get() == "Hill Cipher":
+                    except ValueError:
+                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+                elif self.CipherOption.get() == "Hill Cipher":
+                    try:
+                        k = int(k)
                         text = HillController.Decrypt(k)
-                    self.TextField.delete('1.0', 'end-1c')
-                    self.TextField.insert(END, text)
-                    DAO.SetText(text)
+                    except ValueError:
+                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+                self.TextField.delete('1.0', 'end-1c')
+                self.TextField.insert(END, text)
+                DAO.SetText(text)
 
     def ShowText(self):
         self.TextField.insert(END, DAO.GetText())
