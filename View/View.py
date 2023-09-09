@@ -88,7 +88,7 @@ class View:
                         k = tuple(int(num) for num in
                                   k.replace(", ", ",").replace("(", "").replace(")", "")
                                   .replace("[", "").replace("]", "").replace("{", "")
-                                  .replace("}", "").split(","))
+                                  .replace("}", "").replace(",", " ").split(" "))
                         if len(k) != 2:
                             messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
                         elif math.gcd(k[0], 95) != 1:
@@ -106,7 +106,7 @@ class View:
                         k = tuple(int(num) for num in
                                   k.replace(", ", ",").replace("(", "").replace(")", "")
                                   .replace("[", "").replace("]", "").replace("{", "")
-                                  .replace("}", "").split(","))
+                                  .replace("}", "").replace(",", " ").split(" "))
                         if len(k) != math.isqrt(len(k)) ** 2:
                             messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
                         else:
@@ -142,7 +142,7 @@ class View:
                         k = tuple(int(num) for num in
                                   k.replace(", ", ",").replace("(", "").replace(")", "")
                                   .replace("[", "").replace("]", "").replace("{", "")
-                                  .replace("}", "").split(","))
+                                  .replace("}", "").replace(",", " ").split(" "))
                         if len(k) != 2:
                             messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
                         elif math.gcd(k[0], 95) != 1:
@@ -160,7 +160,7 @@ class View:
                         k = tuple(int(num) for num in
                                   k.replace(", ", ",").replace("(", "").replace(")", "")
                                   .replace("[", "").replace("]", "").replace("{", "")
-                                  .replace("}", "").split(","))
+                                  .replace("}", "").replace(",", " ").split(" "))
                         if len(k) != math.isqrt(len(k)) ** 2:
                             messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
                         else:

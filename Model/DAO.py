@@ -12,13 +12,13 @@ def SetCrypt(s):
 
 def GetText():
     f = open("Data/text.txt", "r")
-    s = f.read()
+    s = f.read().strip()
     f.close()
     return s
 
 
 def GetCrypt():
     f = open("Data/crypt.txt", "r")
-    s = f.read()
+    s = f.read().strip()
     f.close()
     return s
