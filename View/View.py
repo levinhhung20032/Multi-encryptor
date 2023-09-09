@@ -1,4 +1,5 @@
 from Controller import ShiftController
+from Controller import SubstitutionController
 from Controller import AffineController
 from Controller import VigenereController
 from Controller import HillController
@@ -33,7 +34,7 @@ class View:
         self.CryptField['yscrollcommand'] = self.CryptScrollbar.set
 
         self.CipherOptionLabel = Label(self.MainFrame, text="Hệ mã hóa", font=("Arial", "14", "bold"))
-        self.option = ["Shift Cipher", "Affine Cipher", "Vigenère Cipher", "Hill Cipher"]
+        self.option = ["Shift Cipher", "Substitution Cipher", "Affine Cipher", "Vigenère Cipher", "Hill Cipher"]
         self.CipherOption = ttk.Combobox(self.MainFrame, values=self.option, state='readonly')
         self.CipherOption.current(0)
 
@@ -80,6 +81,12 @@ class View:
                     try:
                         k = int(k)
                         crypt = ShiftController.Encrypt(k)
+                    except ValueError:
+                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+
+                elif self.CipherOption.get() == "Substitution Cipher":
+                    try:
+                        crypt = SubstitutionController.Encrypt(k)
                     except ValueError:
                         messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
 
@@ -134,6 +141,12 @@ class View:
                     try:
                         k = int(k)
                         text = ShiftController.Decrypt(k)
+                    except ValueError:
+                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+
+                elif self.CipherOption.get() == "Substitution Cipher":
+                    try:
+                        text = SubstitutionController.Decrypt(k)
                     except ValueError:
                         messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
 

@@ -2,24 +2,28 @@ from Model import DAO
 
 
 def Encrypt(k):
+    alphabet = ""
+    for i in range(95):
+        alphabet += chr(32 + i)
+    EncryptDict = dict(zip(alphabet, k))
     output = ""
-    count = 0
     for i in DAO.GetText():
         if 32 <= ord(i) <= 126:
-            output += chr(((ord(i) - 32) + (ord(k[count % len(k)]) - 32)) % 95 + 32)
-            count += 1
+            output += EncryptDict[i]
         else:
             output += i
     return output
 
 
 def Decrypt(k):
+    alphabet = ""
+    for i in range(95):
+        alphabet += chr(32 + i)
+    DecryptDict = dict(zip(k, alphabet))
     output = ""
-    count = 0
     for i in DAO.GetCrypt():
         if 32 <= ord(i) <= 126:
-            output += chr(((ord(i) - 32) - (ord(k[count % len(k)]) - 32)) % 95 + 32)
-            count += 1
+            output += DecryptDict[i]
         else:
             output += i
     return output
