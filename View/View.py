@@ -3,6 +3,9 @@ from Controller import SubstitutionController
 from Controller import AffineController
 from Controller import VigenereController
 from Controller import HillController
+from Controller import DESController
+from Controller import AESController
+from Controller import RSAController
 from Model import DAO
 from tkinter import *
 from tkinter import messagebox
@@ -34,7 +37,8 @@ class View:
         self.CryptField['yscrollcommand'] = self.CryptScrollbar.set
 
         self.CipherOptionLabel = Label(self.MainFrame, text="Hệ mã hóa", font=("Arial", "14", "bold"))
-        self.option = ["Shift Cipher", "Substitution Cipher", "Affine Cipher", "Vigenère Cipher", "Hill Cipher"]
+        self.option = ["Shift Cipher", "Substitution Cipher", "Affine Cipher",
+                       "Vigenère Cipher", "Hill Cipher", "DES", "AES", "RSA"]
         self.CipherOption = ttk.Combobox(self.MainFrame, values=self.option, state='readonly')
         self.CipherOption.current(0)
 
@@ -118,6 +122,24 @@ class View:
                             messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
                         else:
                             crypt = HillController.Encrypt(k)
+                    except ValueError:
+                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+
+                elif self.CipherOption.get() == "DES":
+                    try:
+                        crypt = DESController.Encrypt(k)
+                    except ValueError:
+                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+
+                elif self.CipherOption.get() == "AES":
+                    try:
+                        crypt = AESController.Encrypt(k)
+                    except ValueError:
+                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+
+                elif self.CipherOption.get() == "RSA":
+                    try:
+                        crypt = RSAController.Encrypt(k)
                     except ValueError:
                         messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
 
