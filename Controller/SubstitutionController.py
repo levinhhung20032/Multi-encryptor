@@ -9,9 +9,9 @@ def Encrypt(k):
     output = ""
     for i in DAO.GetText():
         if 32 <= ord(i) <= 126:
-            output += EncryptDict[i]
+            output += DAO.txt_bin(EncryptDict[i])
         else:
-            output += i
+            output += DAO.txt_bin(i)
     return output
 
 
@@ -23,7 +23,7 @@ def Decrypt(k):
     output = ""
     for i in DAO.GetCrypt():
         if 32 <= ord(i) <= 126:
-            output += DecryptDict[i]
+            output += DAO.txt_bin(DecryptDict[i])
         else:
-            output += i
+            output += DAO.txt_bin(i)
     return output

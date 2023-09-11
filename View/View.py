@@ -102,7 +102,7 @@ class View:
                                   .replace("}", "").replace(",", " ").split(" "))
                         if len(k) != 2:
                             messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
-                        elif math.gcd(k[0], 95) != 1:
+                        elif math.gcd(k[0], 128) != 1:
                             messagebox.showinfo("Hệ số k", "Hệ số k không hợp lệ!")
                         else:
                             crypt = AffineController.Encrypt(k)
@@ -119,9 +119,11 @@ class View:
                                   .replace("[", "").replace("]", "").replace("{", "")
                                   .replace("}", "").replace(",", " ").split(" "))
                         if len(k) != math.isqrt(len(k)) ** 2:
-                            messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+                            messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng1!")
                         else:
                             crypt = HillController.Encrypt(k)
+                    # finally:
+                    #     print("a")
                     except ValueError:
                         messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
 
@@ -181,7 +183,7 @@ class View:
                                   .replace("}", "").replace(",", " ").split(" "))
                         if len(k) != 2:
                             messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
-                        elif math.gcd(k[0], 95) != 1:
+                        elif math.gcd(k[0], 128) != 1:
                             messagebox.showinfo("Hệ số k", "Hệ số k không hợp lệ!")
                         else:
                             text = AffineController.Decrypt(k)
@@ -228,7 +230,7 @@ class View:
                 DAO.SetText(text)
 
     def ShowText(self):
-        self.TextField.insert(END, DAO.GetText())
+        self.TextField.insert(END, DAO.GetText().strip())
 
     def ShowCrypt(self):
-        self.CryptField.insert(END, DAO.GetCrypt())
+        self.CryptField.insert(END, DAO.GetCrypt().strip())

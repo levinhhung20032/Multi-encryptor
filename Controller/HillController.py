@@ -59,8 +59,7 @@ def matrixInverse_modn(A, m):
     for i in range(n):
         for j in range(n):
             M = minor(A, i, j)
-            adj[j][i] = int((round(
-                det(M)) % m))
+            adj[j][i] = int((round(det(M)) % m))
             if (i + 1 + j + 1) % 2 == 1:
                 adj[j][i] = (-1 * adj[j][i]) % m
     return (modInverse(d, m) * adj) % m
@@ -70,33 +69,33 @@ def Encrypt(k):
     m = math.isqrt(len(k))
     k = np.array(k).reshape((m, m))
 
-    output = ""
-    para = DAO.GetText().strip().split(sep="\n")
-    for i in para:
-        if len(i) % m != 0:
-            in_matrix = np.zeros(shape=((len(i) // m) + 1, m), dtype=int)
-        else:
-            in_matrix = np.zeros(shape=((len(i) // m), m), dtype=int)
-        for j in range(len(i)):
-            in_matrix[j // m][j % m] = ord(i[j]) - 32
-        out_matrix = np.dot(in_matrix, k).flatten() % 95 + 32
-        output += "".join(chr(s) for s in out_matrix) + "\n"
-    return output[:-1]
+    i = DAO.GetText()
+    if len(i) % m != 0:
+        in_matrix = np.full(fill_value=32, shape=((len(i) // m) + 1, m), dtype=int)
+    else:
+        in_matrix = np.full(fill_value=32, shape=((len(i) // m), m), dtype=int)
+    for j in range(len(i)):
+        in_matrix[j // m][j % m] = ord(i[j])
+    out_matrix = np.dot(in_matrix, k).flatten() % 128
+    output = "".join(chr(s) for s in out_matrix)
+    output = DAO.txt_bin(output)
+    return output
 
 
 def Decrypt(k):
     m = math.isqrt(len(k))
     k = np.array(k).reshape((m, m))
-    k = matrixInverse_modn(k, 95)
-    output = ""
-    para = DAO.GetCrypt().strip().split(sep="\n")
-    for i in para:
-        if len(i) % m != 0:
-            in_matrix = np.zeros(shape=((len(i) // m) + 1, m), dtype=int)
-        else:
-            in_matrix = np.zeros(shape=((len(i) // m), m), dtype=int)
-        for j in range(len(i)):
-            in_matrix[j // m][j % m] = ord(i[j]) - 32
-        out_matrix = np.dot(in_matrix, k).flatten() % 95 + 32
-        output += "".join(chr(round(s)) for s in out_matrix) + "\n"
-    return output[:-1]
+
+    k = matrixInverse_modn(k, 128)
+
+    i = DAO.GetCrypt()
+    if len(i) % m != 0:
+        in_matrix = np.full(fill_value=32, shape=((len(i) // m) + 1, m), dtype=int)
+    else:
+        in_matrix = np.full(fill_value=32, shape=((len(i) // m), m), dtype=int)
+    for j in range(len(i)):
+        in_matrix[j // m][j % m] = ord(i[j])
+    out_matrix = np.dot(in_matrix, k).flatten() % 128
+    output = "".join(chr(s) for s in out_matrix)
+    output = DAO.txt_bin(output)
+    return output

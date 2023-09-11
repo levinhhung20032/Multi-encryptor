@@ -28,19 +28,13 @@ def ModuloInverse(a, m):
 def Encrypt(k):
     output = ""
     for i in DAO.GetText():
-        if 32 <= ord(i) <= 126:
-            output += chr(((ord(i) - 32) * k[0] + k[1]) % 95 + 32)
-        else:
-            output += i
+        output += DAO.txt_bin(chr((ord(i) * k[0] + k[1]) % 128))
     return output
 
 
 def Decrypt(k):
     output = ""
-    a = ModuloInverse(k[0], 95)
+    a = ModuloInverse(k[0], 128)
     for i in DAO.GetCrypt():
-        if 32 <= ord(i) <= 126:
-            output += chr((a * (ord(i) - 32 - k[1])) % 95 + 32)
-        else:
-            output += i
+        output += DAO.txt_bin(chr((a * (ord(i) - k[1])) % 128))
     return output
