@@ -143,8 +143,9 @@ class View:
                     except ValueError:
                         messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
 
+                crypt = DAO.bin_txt(crypt)
                 self.CryptField.delete('1.0', 'end-1c')
-                self.CryptField.insert(END, crypt)
+                self.CryptField.insert(END, crypt.strip())
                 DAO.SetCrypt(crypt)
 
     def DecryptButtonClick(self):
@@ -203,8 +204,27 @@ class View:
                     except ValueError:
                         messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
 
+                elif self.CipherOption.get() == "DES":
+                    try:
+                        text = DESController.Decrypt(k)
+                    except ValueError:
+                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+
+                elif self.CipherOption.get() == "AES":
+                    try:
+                        text = AESController.Decrypt(k)
+                    except ValueError:
+                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+
+                elif self.CipherOption.get() == "RSA":
+                    try:
+                        text = RSAController.Decrypt(k)
+                    except ValueError:
+                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+
+                text = DAO.bin_txt(text)
                 self.TextField.delete('1.0', 'end-1c')
-                self.TextField.insert(END, text)
+                self.TextField.insert(END, text.strip())
                 DAO.SetText(text)
 
     def ShowText(self):

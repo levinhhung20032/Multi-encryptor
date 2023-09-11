@@ -1,6 +1,5 @@
 import math
 import numpy as np
-from fractions import Fraction
 from numpy import array, zeros
 from numpy.linalg import det
 

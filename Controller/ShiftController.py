@@ -3,19 +3,17 @@ from Model import DAO
 
 def Encrypt(k):
     output = ""
-    for i in DAO.GetText():
-        if 32 <= ord(i) <= 126:
-            output += chr((ord(i) + k - 32) % 95 + 32)
-        else:
-            output += i
+    s = DAO.GetBinText()
+    s = [s[8 * i:8 * i + 8] for i in range(len(s) // 8)]
+    for i in s:
+        output += bin((int(i, 2) + k) % 128).replace("0b", "").zfill(8)
     return output
 
 
 def Decrypt(k):
     output = ""
-    for i in DAO.GetCrypt():
-        if 32 <= ord(i) <= 126:
-            output += chr((ord(i) - k - 32) % 95 + 32)
-        else:
-            output += i
+    s = DAO.GetBinCrypt()
+    s = [s[8 * i:8 * i + 8] for i in range(len(s) // 8)]
+    for i in s:
+        output += bin((int(i, 2) - k) % 128).replace("0b", "").zfill(8)
     return output
