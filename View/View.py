@@ -3,6 +3,7 @@ from Controller import SubstitutionController
 from Controller import AffineController
 from Controller import VigenereController
 from Controller import HillController
+from Controller import PermutationController
 from Controller import DESController
 from Controller import AESController
 from Controller import RSAController
@@ -11,6 +12,7 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
 import math
+import random
 
 
 class View:
@@ -38,7 +40,8 @@ class View:
 
         self.CipherOptionLabel = Label(self.MainFrame, text="Hệ mã hóa", font=("Arial", "14", "bold"))
         self.option = ["Shift Cipher", "Substitution Cipher", "Affine Cipher",
-                       "Vigenère Cipher", "Hill Cipher", "DES", "AES", "RSA"]
+                       "Vigenère Cipher", "Hill Cipher", "Permutation Cipher",
+                       "DES", "AES", "RSA"]
         self.CipherOption = ttk.Combobox(self.MainFrame, values=self.option, state='readonly')
         self.CipherOption.current(0)
 
@@ -78,7 +81,7 @@ class View:
         else:
             DAO.SetText(s)
             if k == "":
-                messagebox.showinfo("Hệ số k", "Chưa điền hệ số k!")
+                k = self.autokey()
             else:
                 crypt = ""
                 if self.CipherOption.get() == "Shift Cipher":
@@ -122,8 +125,12 @@ class View:
                             messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng1!")
                         else:
                             crypt = HillController.Encrypt(k)
-                    # finally:
-                    #     print("a")
+                    except ValueError:
+                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+
+                elif self.CipherOption.get() == "Substitution Cipher":
+                    try:
+                        crypt = PermutationController.Encrypt(k)
                     except ValueError:
                         messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
 
@@ -206,6 +213,12 @@ class View:
                     except ValueError:
                         messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
 
+                elif self.CipherOption.get() == "Permutation Cipher":
+                    try:
+                        text = PermutationController.Decrypt(k)
+                    except ValueError:
+                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+
                 elif self.CipherOption.get() == "DES":
                     try:
                         text = DESController.Decrypt(k)
@@ -234,3 +247,17 @@ class View:
 
     def ShowCrypt(self):
         self.CryptField.insert(END, DAO.GetCrypt().strip())
+
+    def autokey(self):
+        k = ""
+        if self.CipherOption.get() == "Substitution Cipher":
+            for i in range(32, 127):
+                k += chr(i)
+            k = list(k)
+            random.shuffle(k)
+            k = "".join(k)
+            self.KField.insert(END, k)
+            return k
+        else:
+            messagebox.showinfo("Hệ số k", "Chưa điền hệ số k!")
+            return k
