@@ -43,26 +43,23 @@ def modInverse(a, m):
     return x
 
 
-def matrixInverse_modn(A, m):
-    if m <= 1:
-        print("Modulo n must be greater or equal 2 !")
+def matrixInverse_modn(A):
     n = len(A)
     for i in range(0, n):
         for j in range(0, n):
-            A[i][j] = (A[i][j] % m)
-    d = int(round(
-        det(A)) % m)
-    if math.gcd(d, m) != 1:
-        print("Inverse modulo " + str(m) + " does not exist because matrix A is singular!")
+            A[i][j] = (A[i][j] % 128)
+    d = int(round(det(A)) % 128)
+    if math.gcd(d, 128) != 1:
+        print("Inverse modulo " + str(128) + " does not exist because matrix A is singular!")
         return None
     adj = zeros((n, n), dtype=int)
     for i in range(n):
         for j in range(n):
             M = minor(A, i, j)
-            adj[j][i] = int((round(det(M)) % m))
+            adj[j][i] = int((round(det(M)) % 128))
             if (i + 1 + j + 1) % 2 == 1:
-                adj[j][i] = (-1 * adj[j][i]) % m
-    return (modInverse(d, m) * adj) % m
+                adj[j][i] = (-1 * adj[j][i]) % 128
+    return (modInverse(d, 128) * adj) % 128
 
 
 def Encrypt(k):
@@ -86,7 +83,7 @@ def Decrypt(k):
     m = math.isqrt(len(k))
     k = np.array(k).reshape((m, m))
 
-    k = matrixInverse_modn(k, 128)
+    k = matrixInverse_modn(k)
 
     i = DAO.GetCrypt()
     if len(i) % m != 0:

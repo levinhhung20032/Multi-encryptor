@@ -13,6 +13,7 @@ from tkinter import messagebox
 from tkinter import ttk
 import math
 import random
+import numpy as np
 
 
 class View:
@@ -34,7 +35,7 @@ class View:
         self.TextField['yscrollcommand'] = self.TextScrollbar.set
 
         self.CryptLabel = Label(self.MainFrame, text="Bản mã:", font=("Arial", "12"))
-        self.CryptField = Text(self.MainFrame, borderwidth=2, relief="ridge", width=60, height=10)
+        self.CryptField = Text(self.MainFrame, borderwidth=2, relief="ridge", width=60, height=10, state="disabled")
         self.CryptScrollbar = Scrollbar(self.MainFrame, command=self.CryptField.yview, orient=VERTICAL)
         self.CryptField['yscrollcommand'] = self.CryptScrollbar.set
 
@@ -77,7 +78,9 @@ class View:
         k = self.KField.get()
         if s == "":
             self.ShowText()
+            self.CryptField.configure(state="normal")
             self.CryptField.delete('1.0', 'end-1c')
+            self.CryptField.configure(state="disabled")
         else:
             DAO.SetText(s)
             if k == "":
@@ -128,8 +131,12 @@ class View:
                     except ValueError:
                         messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
 
-                elif self.CipherOption.get() == "Substitution Cipher":
+                elif self.CipherOption.get() == "Permutation Cipher":
                     try:
+                        k = tuple(int(num) for num in
+                                  k.replace(", ", ",").replace("(", "").replace(")", "")
+                                  .replace("[", "").replace("]", "").replace("{", "")
+                                  .replace("}", "").replace(",", " ").split(" "))
                         crypt = PermutationController.Encrypt(k)
                     except ValueError:
                         messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
@@ -152,19 +159,24 @@ class View:
                     except ValueError:
                         messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
 
+                self.CryptField.configure(state="normal")
                 crypt = DAO.bin_txt(crypt)
+                DAO.SetCrypt(crypt)
                 self.CryptField.delete('1.0', 'end-1c')
                 self.CryptField.insert(END, crypt.strip())
-                DAO.SetCrypt(crypt)
+                self.CryptField.configure(state="disabled")
 
     def DecryptButtonClick(self):
+        self.CryptField.configure(state="normal")
         s = self.CryptField.get('1.0', 'end-1c')
+        self.CryptField.configure(state="disabled")
         k = self.KField.get()
         if s == "":
+            self.CryptField.configure(state="normal")
             self.ShowCrypt()
+            self.CryptField.configure(state="disabled")
             self.TextField.delete('1.0', 'end-1c')
         else:
-            DAO.SetCrypt(s)
             if k == "":
                 messagebox.showinfo("Hệ số k", "Chưa điền hệ số k!")
             else:
@@ -215,6 +227,10 @@ class View:
 
                 elif self.CipherOption.get() == "Permutation Cipher":
                     try:
+                        k = tuple(int(num) for num in
+                                  k.replace(", ", ",").replace("(", "").replace(")", "")
+                                  .replace("[", "").replace("]", "").replace("{", "")
+                                  .replace("}", "").replace(",", " ").split(" "))
                         text = PermutationController.Decrypt(k)
                     except ValueError:
                         messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
@@ -238,19 +254,26 @@ class View:
                         messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
 
                 text = DAO.bin_txt(text)
+                DAO.SetText(text)
                 self.TextField.delete('1.0', 'end-1c')
                 self.TextField.insert(END, text.strip())
-                DAO.SetText(text)
 
     def ShowText(self):
         self.TextField.insert(END, DAO.GetText().strip())
 
     def ShowCrypt(self):
+        self.CryptField.configure(state="normal")
         self.CryptField.insert(END, DAO.GetCrypt().strip())
+        self.CryptField.configure(state="disabled")
 
     def autokey(self):
         k = ""
-        if self.CipherOption.get() == "Substitution Cipher":
+        if self.CipherOption.get() == "Shift Cipher":
+            k = random.randint(0, 127)
+            self.KField.insert(END, str(k))
+            return k
+
+        elif self.CipherOption.get() == "Substitution Cipher":
             for i in range(32, 127):
                 k += chr(i)
             k = list(k)
@@ -258,6 +281,38 @@ class View:
             k = "".join(k)
             self.KField.insert(END, k)
             return k
+
+        elif self.CipherOption.get() == "Affine Cipher":
+            k = 2
+            while math.gcd(k, 128) != 1:
+                k = random.randint(1, 127)
+            k = tuple((k, random.randint(0, 127)))
+            self.KField.insert(END, str(k))
+            return k
+
+        elif self.CipherOption.get() == "Vigenère Cipher":
+            k = ""
+            for i in range(random.randint(5, 20)):
+                k += chr(random.randint(32, 127))
+            self.KField.insert(END, k)
+            return k
+
+        elif self.CipherOption.get() == "Hill Cipher":
+            k = np.zeros((2, 2))
+            while math.gcd(int(round(np.linalg.det(k)) % 128), 128) != 1:
+                temp = []
+                while len(temp) < 16:
+                    temp.append(random.randint(-128, 128))
+                k = np.array(temp).reshape((math.isqrt(len(temp)), math.isqrt(len(temp))))
+            self.KField.insert(END, str(k.flatten()))
+            return k
+
+        elif self.CipherOption.get() == "Permutation Cipher":
+            k = [i for i in range(len(DAO.GetText()))]
+            random.shuffle(k)
+            self.KField.insert(END, str(k))
+            return k
+
         else:
             messagebox.showinfo("Hệ số k", "Chưa điền hệ số k!")
             return k

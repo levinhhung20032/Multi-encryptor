@@ -117,11 +117,11 @@ def rightshift(code, si):
 #     return output
 
 
-# def hex_bin(hexcode):
-#     code = ""
-#     for i in hexcode:
-#         code += bin(int(i, 16)).replace("0b", "").zfill(4)
-#     return code
+def hex_bin(hexcode):
+    code = ""
+    for i in hexcode:
+        code += bin(int(i, 16)).replace("0b", "").zfill(4)
+    return code
 
 
 def xor(a, b):
@@ -162,8 +162,7 @@ def PC2(code):
 def S(code):
     output = list(code[6 * i:6 * i + 6] for i in range(len(code) // 6))
     for i in range(len(output)):
-        output[i] = bin(s_box[i][int(output[i][0] + output[i][5], 2)][int(output[i][1:5], 2)]).replace("0b", "").zfill(
-            4)
+        output[i] = bin(s_box[i][int(output[i][0] + output[i][5], 2)][int(output[i][1:5], 2)]).replace("0b", "").zfill(4)
     return "".join(output)
 
 
@@ -179,7 +178,7 @@ def mini_key(k):
 
 
 def Encrypt(k):
-    k = DAO.txt_bin(k)
+    k = hex_bin(k)
     key = mini_key(k)
     text = DAO.GetBinText()
 

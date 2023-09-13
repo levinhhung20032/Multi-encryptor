@@ -10,8 +10,6 @@ Nếu có góp ý chỉnh sửa vui lòng liên hệ trực tiếp.
 
 ## II. Bố cục tập tin
 
-![img.png](Image/img.png)
-
 - Controller: Logic chính của ứng dụng.
 
     - Mỗi chương trình sẽ chứa hàm mã hóa và hàm giải mã của hệ mã hóa cùng tên.
@@ -38,8 +36,6 @@ Nếu có góp ý chỉnh sửa vui lòng liên hệ trực tiếp.
 
 Kích đúp vào App.exe để mở giao diện chính của ứng dụng.
 
-![img_1.png](Image/img_1.png)
-
 - Hai vùng trắng được sử dụng để nhập hoặc hiển thị thông tin và bản rõ và bản mã của đoạn thông tin đang thao tác.
 - Hộp chọn được sử dụng để chọn hệ mã hóa muốn sử dụng.
 - Thanh ghi được sử dụng để điền hệ số k phục vụ cho hệ mã hóa đã chọn.
@@ -61,6 +57,7 @@ những hệ mã hóa khác trong tương lai).
 
 > Bạn cũng có thể nhấn "Encrypt" khi chưa có bất kì nội dung nào trong vùng ghi của bản rõ. 
 > Việc này sẽ khiến vùng ghi của bản rõ hiển thị thông tin được lưu trong cơ sở dữ liệu từ trước (bản rõ được thao tác gần đây nhất).
+> Ngoài ra bạn cũng có nhấn "Encrypt" lần nữa nếu chưa điền khóa k để phần mềm tự tạo một khóa k và điền vào thanh ghi
 
 #### Giải mã
 
@@ -80,5 +77,3 @@ những hệ mã hóa khác trong tương lai).
 
 > Tôi đã chuẩn bị một đoạn văn bản được lưu trong "Data/input_backup.docx" nhằm mục đích thử nghiệm.
 > Người dùng có thể sao chép đoạn văn bản này để thử nghiệm mã hóa.
-
-![img_2.png](Image/img_2.png)
