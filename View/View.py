@@ -42,11 +42,11 @@ class View:
         self.CipherOptionLabel = Label(self.MainFrame, text="Hệ mã hóa", font=("Arial", "14", "bold"))
         self.option = ["Shift Cipher", "Substitution Cipher", "Affine Cipher",
                        "Vigenère Cipher", "Hill Cipher", "Permutation Cipher",
-                       "DES", "AES", "RSA"]
+                       "DES", "AES 128", "AES 192", "AES 256", "RSA"]
         self.CipherOption = ttk.Combobox(self.MainFrame, values=self.option, state='readonly')
         self.CipherOption.current(0)
 
-        self.KLabel = Label(self.MainFrame, text="Hệ số k:", font=("Arial", "12"))
+        self.KLabel = Label(self.MainFrame, text="Khóa k:", font=("Arial", "12"))
         self.KField = Entry(self.MainFrame, font=("Arial", "12"))
 
         self.EncryptButton = ttk.Button(self.MainFrame, text="Encrypt", command=self.EncryptButtonClick)
@@ -92,72 +92,80 @@ class View:
                         k = int(k)
                         crypt = ShiftController.Encrypt(k)
                     except ValueError:
-                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+                        messagebox.showinfo("Khóa k", "Khóa k sai định dạng!")
 
                 elif self.CipherOption.get() == "Substitution Cipher":
-                    try:
+                    if len(k) == 95:
                         crypt = SubstitutionController.Encrypt(k)
-                    except ValueError:
-                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+                    else:
+                        messagebox.showinfo("Khóa k", "Khóa k chưa đủ lớn!")
 
                 elif self.CipherOption.get() == "Affine Cipher":
-                    try:
-                        k = tuple(int(num) for num in
-                                  k.replace(", ", ",").replace("(", "").replace(")", "")
-                                  .replace("[", "").replace("]", "").replace("{", "")
-                                  .replace("}", "").replace(",", " ").split(" "))
-                        if len(k) != 2:
-                            messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
-                        elif math.gcd(k[0], 128) != 1:
-                            messagebox.showinfo("Hệ số k", "Hệ số k không hợp lệ!")
-                        else:
-                            crypt = AffineController.Encrypt(k)
-                    except ValueError:
-                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+                    k = tuple(int(num) for num in
+                              k.replace(", ", ",").replace("(", "").replace(")", "")
+                              .replace("[", "").replace("]", "").replace("{", "")
+                              .replace("}", "").replace(",", " ").split(" "))
+                    if len(k) != 2:
+                        messagebox.showinfo("Khóa k", "Khóa k sai định dạng!")
+                    elif math.gcd(k[0], 128) != 1:
+                        messagebox.showinfo("Khóa k", "Khóa k không phù hợp!")
+                    else:
+                        crypt = AffineController.Encrypt(k)
 
                 elif self.CipherOption.get() == "Vigenère Cipher":
                     crypt = VigenereController.Encrypt(k)
 
                 elif self.CipherOption.get() == "Hill Cipher":
-                    try:
-                        k = tuple(int(num) for num in
-                                  k.replace(", ", ",").replace("(", "").replace(")", "")
-                                  .replace("[", "").replace("]", "").replace("{", "")
-                                  .replace("}", "").replace(",", " ").split(" "))
-                        if len(k) != math.isqrt(len(k)) ** 2:
-                            messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng1!")
-                        else:
-                            crypt = HillController.Encrypt(k)
-                    except ValueError:
-                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+                    k = tuple(int(num) for num in
+                              k.replace(", ", ",").replace("(", "").replace(")", "")
+                              .replace("[", "").replace("]", "").replace("{", "")
+                              .replace("}", "").replace(",", " ").split(" "))
+                    if len(k) != math.isqrt(len(k)) ** 2:
+                        messagebox.showinfo("Khóa k", "Khóa k sai định dạng!")
+                    elif math.gcd(int(round(np.linalg.det(k)) % 128), 128) != 1:
+                        messagebox.showinfo("Khóa k", "Khóa k không phù hợp!")
+                    else:
+                        crypt = HillController.Encrypt(k)
 
                 elif self.CipherOption.get() == "Permutation Cipher":
-                    try:
-                        k = tuple(int(num) for num in
-                                  k.replace(", ", ",").replace("(", "").replace(")", "")
-                                  .replace("[", "").replace("]", "").replace("{", "")
-                                  .replace("}", "").replace(",", " ").split(" "))
+                    k = tuple(int(num) for num in
+                              k.replace(", ", ",").replace("(", "").replace(")", "")
+                              .replace("[", "").replace("]", "").replace("{", "")
+                              .replace("}", "").replace(",", " ").split(" "))
+                    if len(k) == len(DAO.GetText()):
                         crypt = PermutationController.Encrypt(k)
-                    except ValueError:
-                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+                    else:
+                        messagebox.showinfo("Khóa k", "Khóa k sai định dạng!")
 
                 elif self.CipherOption.get() == "DES":
-                    try:
+                    if len(k) == 16:
                         crypt = DESController.Encrypt(k)
-                    except ValueError:
-                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+                    else:
+                        messagebox.showinfo("Khóa k", "Khóa k chưa đủ lớn!")
 
-                elif self.CipherOption.get() == "AES":
-                    try:
-                        crypt = AESController.Encrypt(k)
-                    except ValueError:
-                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+                elif self.CipherOption.get() == "AES 128":
+                    if len(k) == 32:
+                        crypt = AESController.Encrypt(k, 128)
+                    else:
+                        messagebox.showinfo("Khóa k", "Khóa k chưa đủ lớn!")
+
+                elif self.CipherOption.get() == "AES 192":
+                    if len(k) == 48:
+                        crypt = AESController.Encrypt(k, 192)
+                    else:
+                        messagebox.showinfo("Khóa k", "Khóa k chưa đủ lớn!")
+
+                elif self.CipherOption.get() == "AES 256":
+                    if len(k) == 64:
+                        crypt = AESController.Encrypt(k, 256)
+                    else:
+                        messagebox.showinfo("Khóa k", "Khóa k chưa đủ lớn!")
 
                 elif self.CipherOption.get() == "RSA":
                     try:
                         crypt = RSAController.Encrypt(k)
                     except ValueError:
-                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+                        messagebox.showinfo("Khóa k", "Khóa k sai định dạng!")
 
                 self.CryptField.configure(state="normal")
                 crypt = DAO.bin_txt(crypt)
@@ -178,7 +186,7 @@ class View:
             self.TextField.delete('1.0', 'end-1c')
         else:
             if k == "":
-                messagebox.showinfo("Hệ số k", "Chưa điền hệ số k!")
+                messagebox.showinfo("Khóa k", "Chưa điền Khóa k!")
             else:
                 text = ""
                 if self.CipherOption.get() == "Shift Cipher":
@@ -186,72 +194,80 @@ class View:
                         k = int(k)
                         text = ShiftController.Decrypt(k)
                     except ValueError:
-                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+                        messagebox.showinfo("Khóa k", "Khóa k sai định dạng!")
 
                 elif self.CipherOption.get() == "Substitution Cipher":
-                    try:
+                    if len(k) == 95:
                         text = SubstitutionController.Decrypt(k)
-                    except ValueError:
-                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+                    else:
+                        messagebox.showinfo("Khóa k", "Khóa k chưa đủ lớn!")
 
                 elif self.CipherOption.get() == "Affine Cipher":
-                    try:
-                        k = tuple(int(num) for num in
-                                  k.replace(", ", ",").replace("(", "").replace(")", "")
-                                  .replace("[", "").replace("]", "").replace("{", "")
-                                  .replace("}", "").replace(",", " ").split(" "))
-                        if len(k) != 2:
-                            messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
-                        elif math.gcd(k[0], 128) != 1:
-                            messagebox.showinfo("Hệ số k", "Hệ số k không hợp lệ!")
-                        else:
-                            text = AffineController.Decrypt(k)
-                    except ValueError:
-                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+                    k = tuple(int(num) for num in
+                              k.replace(", ", ",").replace("(", "").replace(")", "")
+                              .replace("[", "").replace("]", "").replace("{", "")
+                              .replace("}", "").replace(",", " ").split(" "))
+                    if len(k) != 2:
+                        messagebox.showinfo("Khóa k", "Khóa k sai định dạng!")
+                    elif math.gcd(k[0], 128) != 1:
+                        messagebox.showinfo("Khóa k", "Khóa k không phù hợp!")
+                    else:
+                        text = AffineController.Decrypt(k)
 
                 elif self.CipherOption.get() == "Vigenère Cipher":
                     text = VigenereController.Decrypt(k)
 
                 elif self.CipherOption.get() == "Hill Cipher":
-                    try:
-                        k = tuple(int(num) for num in
-                                  k.replace(", ", ",").replace("(", "").replace(")", "")
-                                  .replace("[", "").replace("]", "").replace("{", "")
-                                  .replace("}", "").replace(",", " ").split(" "))
-                        if len(k) != math.isqrt(len(k)) ** 2:
-                            messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
-                        else:
-                            text = HillController.Decrypt(k)
-                    except ValueError:
-                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+                    k = tuple(int(num) for num in
+                              k.replace(", ", ",").replace("(", "").replace(")", "")
+                              .replace("[", "").replace("]", "").replace("{", "")
+                              .replace("}", "").replace(",", " ").split(" "))
+                    if len(k) != math.isqrt(len(k)) ** 2:
+                        messagebox.showinfo("Khóa k", "Khóa k sai định dạng!")
+                    elif math.gcd(int(round(np.linalg.det(k)) % 128), 128) != 1:
+                        messagebox.showinfo("Khóa k", "Khóa k không phù hợp!")
+                    else:
+                        text = HillController.Decrypt(k)
 
                 elif self.CipherOption.get() == "Permutation Cipher":
-                    try:
-                        k = tuple(int(num) for num in
-                                  k.replace(", ", ",").replace("(", "").replace(")", "")
-                                  .replace("[", "").replace("]", "").replace("{", "")
-                                  .replace("}", "").replace(",", " ").split(" "))
+                    k = tuple(int(num) for num in
+                              k.replace(", ", ",").replace("(", "").replace(")", "")
+                              .replace("[", "").replace("]", "").replace("{", "")
+                              .replace("}", "").replace(",", " ").split(" "))
+                    if len(k) == len(DAO.GetText()):
                         text = PermutationController.Decrypt(k)
-                    except ValueError:
-                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+                    else:
+                        messagebox.showinfo("Khóa k", "Khóa k sai định dạng!")
 
                 elif self.CipherOption.get() == "DES":
-                    try:
+                    if len(k) == 16:
                         text = DESController.Decrypt(k)
-                    except ValueError:
-                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+                    else:
+                        messagebox.showinfo("Khóa k", "Khóa k chưa đủ lớn!")
 
-                elif self.CipherOption.get() == "AES":
-                    try:
-                        text = AESController.Decrypt(k)
-                    except ValueError:
-                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+                elif self.CipherOption.get() == "AES 128":
+                    if len(k) == 32:
+                        text = AESController.Decrypt(k, 128)
+                    else:
+                        messagebox.showinfo("Khóa k", "Khóa k chưa đủ lớn!")
+
+                elif self.CipherOption.get() == "AES 192":
+                    if len(k) == 48:
+                        text = AESController.Decrypt(k, 192)
+                    else:
+                        messagebox.showinfo("Khóa k", "Khóa k chưa đủ lớn!")
+
+                elif self.CipherOption.get() == "AES 256":
+                    if len(k) == 64:
+                        text = AESController.Decrypt(k, 256)
+                    else:
+                        messagebox.showinfo("Khóa k", "Khóa k chưa đủ lớn!")
 
                 elif self.CipherOption.get() == "RSA":
                     try:
                         text = RSAController.Decrypt(k)
                     except ValueError:
-                        messagebox.showinfo("Hệ số k", "Hệ số k sai định dạng!")
+                        messagebox.showinfo("Khóa k", "Khóa k sai định dạng!")
 
                 text = DAO.bin_txt(text)
                 DAO.SetText(text)
@@ -313,6 +329,39 @@ class View:
             self.KField.insert(END, str(k))
             return k
 
+        elif self.CipherOption.get() == "DES":
+            k = []
+            for i in range(16):
+                k.append(hex(random.randint(0, 15)).replace("0x", ""))
+            k = "".join(k)
+            self.KField.insert(END, str(k))
+            return k
+
+        elif self.CipherOption.get() == "AES 128":
+            k = []
+            for i in range(32):
+                k.append(hex(random.randint(0, 15)).replace("0x", ""))
+            k = "".join(k)
+            self.KField.insert(END, str(k))
+            return k
+
+        elif self.CipherOption.get() == "AES 192":
+            k = []
+            for i in range(48):
+                k.append(hex(random.randint(0, 15)).replace("0x", ""))
+            k = "".join(k)
+            self.KField.insert(END, str(k))
+            return k
+
+        elif self.CipherOption.get() == "AES 256":
+            k = []
+            for i in range(64):
+                k.append(hex(random.randint(0, 15)).replace("0x", ""))
+            k = "".join(k)
+            self.KField.insert(END, str(k))
+            return k
+
+
         else:
-            messagebox.showinfo("Hệ số k", "Chưa điền hệ số k!")
+            messagebox.showinfo("Khóa k", "Chưa điền Khóa k!")
             return k

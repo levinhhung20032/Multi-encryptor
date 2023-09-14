@@ -109,14 +109,6 @@ def rightshift(code, si):
     return code
 
 
-# def hexa(code):
-#     output = ""
-#     code = [code[4 * i:4 * i + 4] for i in range(len(code) // 4)]
-#     for i in code:
-#         output += hex(int(i, 2)).replace("0x", "").upper()
-#     return output
-
-
 def hex_bin(hexcode):
     code = ""
     for i in hexcode:
@@ -206,7 +198,7 @@ def Encrypt(k):
 
 
 def Decrypt(k):
-    k = DAO.txt_bin(k)
+    k = hex_bin(k)
     key = mini_key(k)
     key.reverse()
     text = DAO.GetBinCrypt()
