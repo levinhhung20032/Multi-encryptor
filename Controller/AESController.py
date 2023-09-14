@@ -106,7 +106,7 @@ def temp_word(word, step):
 def mini_key(k, mode):
     k = [k[2 * i: 2 * i + 2] for i in range(len(k) // 2)]
     w = [k[4 * i: 4 * i + 4] for i in range(len(k) // 4)]
-    count = 3
+    count = (mode // 32) - 1
     for i in w:
         if (count + 1) % (mode // 32) == 0:
             w.append(xor(i, temp_word(w[count], count // (mode // 32))))
