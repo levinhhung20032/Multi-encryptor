@@ -2,7 +2,11 @@
 
 ## I. Lời nói đầu
 
-Đây là sản phẩm của Lê Vĩnh Hưng, mã sinh viên 21011494.
+Đây là sản phẩm của Lê Vĩnh Hưng:
+
+    - MSV: 21011494
+    - K15-KHMT
+    - Đại học Phenikaa.
 
 Ứng dụng được viết nhằm mục đích phục vụ học phần "An toàn và bảo mật thông tin".
 

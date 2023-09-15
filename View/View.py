@@ -6,7 +6,6 @@ from Controller import HillController
 from Controller import PermutationController
 from Controller import DESController
 from Controller import AESController
-from Controller import RSAController
 from Model import DAO
 from tkinter import *
 from tkinter import messagebox
@@ -42,7 +41,7 @@ class View:
         self.CipherOptionLabel = Label(self.MainFrame, text="Hệ mã hóa", font=("Arial", "14", "bold"))
         self.option = ["Shift Cipher", "Substitution Cipher", "Affine Cipher",
                        "Vigenère Cipher", "Hill Cipher", "Permutation Cipher",
-                       "DES", "AES 128", "AES 192", "AES 256", "RSA"]
+                       "DES", "AES 128", "AES 192", "AES 256"]
         self.CipherOption = ttk.Combobox(self.MainFrame, values=self.option, state='readonly')
         self.CipherOption.current(0)
 
@@ -161,12 +160,6 @@ class View:
                     else:
                         messagebox.showinfo("Khóa k", "Khóa k chưa đủ lớn!")
 
-                elif self.CipherOption.get() == "RSA":
-                    try:
-                        crypt = RSAController.Encrypt(k)
-                    except ValueError:
-                        messagebox.showinfo("Khóa k", "Khóa k sai định dạng!")
-
                 self.CryptField.configure(state="normal")
                 crypt = DAO.bin_txt(crypt)
                 DAO.SetCrypt(crypt)
@@ -263,12 +256,6 @@ class View:
                     else:
                         messagebox.showinfo("Khóa k", "Khóa k chưa đủ lớn!")
 
-                elif self.CipherOption.get() == "RSA":
-                    try:
-                        text = RSAController.Decrypt(k)
-                    except ValueError:
-                        messagebox.showinfo("Khóa k", "Khóa k sai định dạng!")
-
                 text = DAO.bin_txt(text)
                 DAO.SetText(text)
                 self.TextField.delete('1.0', 'end-1c')
@@ -359,9 +346,4 @@ class View:
                 k.append(hex(random.randint(0, 15)).replace("0x", ""))
             k = "".join(k)
             self.KField.insert(END, str(k))
-            return k
-
-
-        else:
-            messagebox.showinfo("Khóa k", "Chưa điền Khóa k!")
             return k
