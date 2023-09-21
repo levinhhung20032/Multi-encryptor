@@ -30,15 +30,15 @@ Nếu có góp ý chỉnh sửa vui lòng liên hệ trực tiếp.
 
 - View: Giao diện của ứng dụng.
 
-- App.exe: Ứng dụng chính.
+- Multi-encryptor.exe: Ứng dụng chính.
 
-- README.md: Giới thiệu và hướng dẫn sử dụng.
+- README.pdf: Giới thiệu và hướng dẫn sử dụng.
 
 ## III. Hướng dẫn sử dụng
 
 ### Khởi động
 
-Kích đúp vào App.exe để mở giao diện chính của ứng dụng.
+Kích đúp vào Multi-encryptor.exe để mở giao diện chính của ứng dụng.
 
 - Hai vùng trắng được sử dụng để nhập hoặc hiển thị thông tin và bản rõ và bản mã của đoạn thông tin đang thao tác.
 - Hộp chọn được sử dụng để chọn hệ mã hóa muốn sử dụng.

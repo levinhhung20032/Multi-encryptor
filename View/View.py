@@ -10,6 +10,7 @@ from Model import DAO
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
+from tkinter import filedialog
 import math
 import random
 import numpy as np
@@ -24,42 +25,41 @@ class View:
         self.main.attributes("-topmost", True)
         self.main.resizable(False, False)
 
-        self.MainFrame = Frame(self.main)
-
-        self.MainFrame.pack(fill="both", expand=1)
-
-        self.TextLabel = Label(self.MainFrame, text="Bản rõ:", font=("Arial", "12"))
-        self.TextField = Text(self.MainFrame, borderwidth=2, relief="ridge", width=60, height=10)
-        self.TextScrollbar = Scrollbar(self.MainFrame, command=self.TextField.yview, orient=VERTICAL)
+        self.TextLabel = Label(self.main, text="Bản rõ:", font=("Arial", "12"))
+        self.TextField = Text(self.main, borderwidth=2, relief="ridge", width=60, height=10)
+        self.TextScrollbar = Scrollbar(self.main, command=self.TextField.yview, orient=VERTICAL)
         self.TextField['yscrollcommand'] = self.TextScrollbar.set
 
-        self.CryptLabel = Label(self.MainFrame, text="Bản mã:", font=("Arial", "12"))
-        self.CryptField = Text(self.MainFrame, borderwidth=2, relief="ridge", width=60, height=10, state="disabled")
-        self.CryptScrollbar = Scrollbar(self.MainFrame, command=self.CryptField.yview, orient=VERTICAL)
+        self.CryptLabel = Label(self.main, text="Bản mã:", font=("Arial", "12"))
+        self.CryptField = Text(self.main, borderwidth=2, relief="ridge", width=60, height=10, state="disabled")
+        self.CryptScrollbar = Scrollbar(self.main, command=self.CryptField.yview, orient=VERTICAL)
         self.CryptField['yscrollcommand'] = self.CryptScrollbar.set
 
-        self.CipherOptionLabel = Label(self.MainFrame, text="Hệ mã hóa", font=("Arial", "14", "bold"))
+        self.CipherOptionLabel = Label(self.main, text="Hệ mã hóa", font=("Arial", "14", "bold"))
         self.option = ["Shift Cipher", "Substitution Cipher", "Affine Cipher",
                        "Vigenère Cipher", "Hill Cipher", "Permutation Cipher",
                        "DES", "AES 128", "AES 192", "AES 256"]
-        self.CipherOption = ttk.Combobox(self.MainFrame, values=self.option, state='readonly')
+        self.CipherOption = ttk.Combobox(self.main, values=self.option, state='readonly')
         self.CipherOption.current(0)
 
-        self.KLabel = Label(self.MainFrame, text="Khóa k:", font=("Arial", "12"))
-        self.KField = Entry(self.MainFrame, font=("Arial", "12"))
+        self.KLabel = Label(self.main, text="Khóa k:", font=("Arial", "12"))
+        self.KField = Entry(self.main, font=("Arial", "12"))
 
-        self.EncryptButton = ttk.Button(self.MainFrame, text="Encrypt", command=self.EncryptButtonClick)
-        self.DecryptButton = ttk.Button(self.MainFrame, text="Decrypt", command=self.DecryptButtonClick)
+        self.var = IntVar()
+        self.var.set(0)
+        self.DefaultRadioButton = Radiobutton(self.main, text="Mặc định", variable=self.var, value=0)
+        self.FileRadioButton = Radiobutton(self.main, text="Chọn file", variable=self.var, value=1)
 
-        self.MainFrame.grid(column=0, row=0)
+        self.EncryptButton = ttk.Button(self.main, text="Encrypt", command=self.EncryptButtonClick)
+        self.DecryptButton = ttk.Button(self.main, text="Decrypt", command=self.DecryptButtonClick)
 
         self.TextLabel.grid(column=0, row=0, sticky=W)
         self.TextField.grid(column=0, row=1, columnspan=2, rowspan=2)
         self.TextScrollbar.grid(column=2, row=1, rowspan=2, sticky=W + N + S)
 
         self.CryptLabel.grid(column=0, row=3, sticky=W)
-        self.CryptField.grid(column=0, row=4, columnspan=2, rowspan=2)
-        self.CryptScrollbar.grid(column=2, row=4, rowspan=2, sticky=W + N + S)
+        self.CryptField.grid(column=0, row=4, columnspan=2, rowspan=3)
+        self.CryptScrollbar.grid(column=2, row=4, rowspan=3, sticky=W + N + S)
 
         self.CipherOptionLabel.grid(column=3, row=1, columnspan=2, padx=10)
         self.CipherOption.grid(column=3, row=2, columnspan=2)
@@ -67,8 +67,11 @@ class View:
         self.KLabel.grid(column=3, row=3, sticky=W, padx=10)
         self.KField.grid(column=3, row=4, columnspan=2, sticky=N, padx=10)
 
-        self.EncryptButton.grid(column=3, row=5, sticky=S)
-        self.DecryptButton.grid(column=4, row=5, sticky=S)
+        self.DefaultRadioButton.grid(column=3, row=5, sticky=S)
+        self.FileRadioButton.grid(column=4, row=5, sticky=S)
+
+        self.EncryptButton.grid(column=3, row=6)
+        self.DecryptButton.grid(column=4, row=6)
 
         self.main.mainloop()
 
@@ -76,7 +79,10 @@ class View:
         s = self.TextField.get('1.0', 'end-1c')
         k = self.KField.get()
         if s == "":
-            self.ShowText()
+            if self.var.get() == 0:
+                self.ShowDefaultText()
+            else:
+                self.ShowFileText()
             self.CryptField.configure(state="normal")
             self.CryptField.delete('1.0', 'end-1c')
             self.CryptField.configure(state="disabled")
@@ -174,10 +180,15 @@ class View:
         k = self.KField.get()
         if s == "":
             self.CryptField.configure(state="normal")
-            self.ShowCrypt()
+            if self.var.get() == 0:
+                self.ShowDefaultCrypt()
+            else:
+                self.ShowFileCrypt()
             self.CryptField.configure(state="disabled")
             self.TextField.delete('1.0', 'end-1c')
         else:
+            if self.var.get() == 1:
+                DAO.SetCrypt(s)
             if k == "":
                 messagebox.showinfo("Khóa k", "Chưa điền Khóa k!")
             else:
@@ -261,13 +272,25 @@ class View:
                 self.TextField.delete('1.0', 'end-1c')
                 self.TextField.insert(END, text.strip())
 
-    def ShowText(self):
+    def ShowDefaultText(self):
         self.TextField.insert(END, DAO.GetText().strip())
 
-    def ShowCrypt(self):
+    def ShowFileText(self):
+        f = open(filedialog.askopenfilename(), "r")
+        self.TextField.insert(END, f.read())
+        f.close()
+
+    def ShowDefaultCrypt(self):
         self.CryptField.configure(state="normal")
         self.CryptField.insert(END, DAO.GetCrypt().strip())
         self.CryptField.configure(state="disabled")
+
+    def ShowFileCrypt(self):
+        f = open(filedialog.askopenfilename(), "r")
+        self.CryptField.configure(state="normal")
+        self.CryptField.insert(END, f.read())
+        self.CryptField.configure(state="disabled")
+        f.close()
 
     def autokey(self):
         k = ""
